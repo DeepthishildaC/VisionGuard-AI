@@ -5,13 +5,12 @@ from app.models.base import Base, TimestampMixin
 
 
 class Role(Base, TimestampMixin):
-
     __tablename__ = "roles"
 
     id = Column(Integer, primary_key=True, index=True)
 
     name = Column(
-        String(50),
+        String(30),
         unique=True,
         nullable=False
     )
@@ -20,3 +19,6 @@ class Role(Base, TimestampMixin):
         "User",
         back_populates="role"
     )
+
+    def __repr__(self):
+        return f"<Role(id={self.id}, name='{self.name}')>"

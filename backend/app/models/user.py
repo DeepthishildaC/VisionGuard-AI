@@ -20,7 +20,7 @@ class User(Base, TimestampMixin):
 
     # Basic Information
     username = Column(
-        String(50),
+        String(50), 
         unique=True,
         nullable=False,
         index=True,
