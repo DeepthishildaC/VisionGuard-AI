@@ -19,6 +19,14 @@ from app.api.v1.alerts import router as alert_router
 
 from app.api.v1.ai_summaries import router as ai_summary_router
 
+from app.routes.camera_stream import router as camera_stream_router
+
+from app.routes.websocket import router as websocket_router
+
+from fastapi import WebSocket, WebSocketDisconnect
+
+from app.websocket.manager import manager
+
 # Create all database tables
 Base.metadata.create_all(bind=engine)
 
@@ -35,6 +43,10 @@ app.include_router(incident_router)
 app.include_router(detection_router)
 app.include_router(alert_router)
 app.include_router(ai_summary_router)
+app.include_router(camera_stream_router)
+app.include_router(websocket_router)
+
+
 
 @app.get("/")
 def root():
@@ -48,3 +60,19 @@ def health():
     return {
         "status": "healthy"
     }
+
+@app.websocket("/ws/incidents")
+async def websocket_incidents(websocket: WebSocket):
+    """
+    Real-time incident WebSocket.
+    """
+
+    await manager.connect(websocket)
+
+    try:
+        while True:
+            # Keep the connection alive
+            await websocket.receive_text()
+
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)

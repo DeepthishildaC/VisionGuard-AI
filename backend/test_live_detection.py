@@ -14,11 +14,14 @@ while True:
 
     detections = detect_objects(frame)
 
-    for detection in detections:
+    for det in detections:
 
-        x1, y1, x2, y2 = detection["bbox"]
+        x1, y1, x2, y2 = det["bbox"]
 
-        label = f'{detection["class"]} {detection["confidence"]:.2f}'
+        label = (
+            f'{det["class"]} '
+            f'{det["confidence"]:.2f}'
+        )
 
         cv2.rectangle(
             frame,
@@ -40,7 +43,7 @@ while True:
 
     cv2.imshow("VisionGuard AI", frame)
 
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    if cv2.waitKey(1) == ord("q"):
         break
 
 cap.release()

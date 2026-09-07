@@ -1,9 +1,14 @@
 import cv2
 
-from app.ai.camera import open_camera
 from app.ai.detector import detect_objects
 
-cap = open_camera()
+
+# Open default webcam
+cap = cv2.VideoCapture(0)
+
+if not cap.isOpened():
+    print("Could not open webcam.")
+    exit()
 
 while True:
 
@@ -14,11 +19,11 @@ while True:
 
     detections = detect_objects(frame)
 
-    for detection in detections:
+    for det in detections:
 
-        x1, y1, x2, y2 = detection["bbox"]
+        x1, y1, x2, y2 = det["bbox"]
 
-        label = f'{detection["class"]} {detection["confidence"]:.2f}'
+        label = f'{det["class"]} {det["confidence"]:.2f}'
 
         cv2.rectangle(
             frame,
@@ -38,8 +43,9 @@ while True:
             2,
         )
 
-    cv2.imshow("VisionGuard AI", frame)
+    cv2.imshow("VisionGuard AI - Live Detection", frame)
 
+    # Press Q to quit
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
